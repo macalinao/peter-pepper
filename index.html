@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>Peter Pepper</title>
+</head>
+<body>
+   <p>Peter Pepper</p>
+   <script src="webworks-1.0.2.9.js"></script>
+   <script>
+      function ready() {
+         var ele = document.createElement("div");
+         ele.innerHTML = "uuid: " + blackberry.identity.uuid;
+         document.documentElement.appendChild(ele);
+      }
+      window.addEventListener("load", function(e) {
+         document.addEventListener("webworksready", ready);
+      }, false);
+   </script>
+</body>
+</html>
