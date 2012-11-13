@@ -1,15 +1,19 @@
-$(function() {
-
-    var assets = new AssetManager(["bg"], []);
-    assets.load();
+document.addEventListener("webworksready", function() {
+    var game = new Engin.Game({
+        platform: Engin.Platform.WEB,
+        assets: {
+            images: ["bg"],
+            sounds: ["mariachi"]
+        }
+    });
 
     var canvas = document.getElementById("game");
-    canvas.width = document.width
-    canvas.height = document.height
-    
-    var ctx = canvas.getContext("2d");
-    // ctx.fillStyle = "#000000";
-    // ctx.fillRect(10, 10, 100, 100);
+    canvas.width = document.width;
+    canvas.height = document.height;
 
-    ctx.drawImage(assets.images.bg, 0, 0, canvas.width, canvas.height)
+    game.initialize(canvas);
+
+    game.ctx.drawImage(game.assets.images.bg, 0, 0, canvas.width, canvas.height);
+
+    game.assets.sounds.mariachi.play();
 });
