@@ -14,6 +14,19 @@ Engin.Game = function(params) {
 }
 
 /**
+ * Defines the states part of this game.
+ * @param  {[type]} states [description]
+ * @return {[type]}        [description]
+ */
+Engin.Game.prototype.defineStates = function defineStates(states) {
+    this.states = {};
+    for (name in states) {
+        this.states[name] = new states[name]();
+        this.states[name].game = this;
+    }
+}
+
+/**
  * Initializes the game's resources.
  * @return {[type]} [description]
  */
@@ -21,6 +34,26 @@ Engin.Game.prototype.initialize = function initialize(canvas) {
     this.assets.load();
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
+};
+
+Engin.Game.prototype.start = function start() {
+    this.state = this.states.initial;
+    this.states.initial.enter();
+
+    var game = this;
+    setInterval(function loop() {
+        game.state.update(50);
+        game.state.render();
+    }, 50);
+};
+
+Engin.Game.prototype.switchState = function switchState(name) {
+    var prevState = this.state;
+    var nextState = this.states[name];
+
+    prevState.exit();
+    this.state = nextState;
+    nextState.enter();
 };
 
 /**
