@@ -11,6 +11,7 @@ var Engin = {};
 Engin.Game = function(params) {
     this.platform = params.platform;
     this.assets = new Engin.Assets.AssetManager(this, params.assets.images, params.assets.sounds);
+    this.globals = {};
 }
 
 /**
@@ -43,6 +44,7 @@ Engin.Game.prototype.start = function start() {
     var game = this;
     setInterval(function loop() {
         game.state.update(50);
+        game.ctx.clearRect(0, 0, game.canvas.width, game.canvas.height);
         game.state.render();
     }, 50);
 };

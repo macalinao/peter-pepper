@@ -1,3 +1,31 @@
+function Clouds(game) {
+    this.game = game;
+    this.x = 0;
+    this.y = 50;
+    this.speed = 100;
+}
+
+Clouds.prototype.update = function(delta) {
+    this.x -= this.speed * (delta / 1000);
+    if (this.x < -this.game.canvas.width) {
+        this.x = 0;
+    }
+};
+
+Clouds.prototype.draw = function() {
+    this.game.ctx.drawImage(this.game.assets.images.clouds, this.x, this.y, this.game.canvas.width, this.game.canvas.height / 4);
+    this.game.ctx.drawImage(this.game.assets.images.clouds, this.x + this.game.canvas.width, this.y, this.game.canvas.width, this.game.canvas.height / 4);
+};
+
+function backgroundUpdate(game, delta) {
+    game.globals.clouds.update(delta);
+}
+
+function backgroundRender(game) {
+    game.ctx.drawImage(game.assets.images.bg, 0, 0, game.canvas.width, game.canvas.height);
+    game.globals.clouds.draw();
+}
+
 /**
  * Main menu state
  */
@@ -13,27 +41,28 @@ StateMainMenu.prototype.enter = function enter() {
 };
 
 StateMainMenu.prototype.update = function update(delta) {
+    backgroundUpdate(this.game, delta);
 };
 
 StateMainMenu.prototype.render = function render() {
-    var x = this.game.ctx;
-
-    x.clearRect(0, 0, this.game.canvas.width, this.game.canvas.height);
-    x.drawImage(this.game.assets.images.bg, 0, 0);
+    backgroundRender(this.game);
 };
 
 /**
  * In-game state
  */
 var StateInGame = function StateInGame() {
-
 };
 
-document.addEventListener("webworksready", function() {
+StateInGame.prototype.initialize = function initialize() {
+};
+
+// document.addEventListener("webworksready", function() {
+$(function() {
     var game = new Engin.Game({
         platform: Engin.Platform.WEB,
         assets: {
-            images: ["bg"],
+            images: ["bg", "clouds", "greenpepper", "mexican", "mexican_mouth", "redpepper"],
             sounds: ["mariachi"]
         }
     });
@@ -45,6 +74,7 @@ document.addEventListener("webworksready", function() {
     game.defineStates({
         initial: StateMainMenu
     });
+    game.globals.clouds = new Clouds(game);
     game.initialize(canvas);
     game.start();
 });
