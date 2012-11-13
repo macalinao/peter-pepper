@@ -7,4 +7,5 @@
   <name>Peter Pepper</name>
   <content src="index.html"/>
   <feature id="blackberry.identity" required="true" version="1.0.0.0"/>
+  <rim:orientation mode="landscape" />
 </widget>
