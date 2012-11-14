@@ -32,15 +32,8 @@ function backgroundRender(game) {
 var StateMainMenu = function StateMainMenu() {
 };
 
-StateMainMenu.prototype.initialize = function initialize() {
-    this.selected = 0;
-};
-
 StateMainMenu.prototype.enter = function enter() {
     this.game.assets.sounds.mariachi.play();
-};
-
-StateMainMenu.prototype.exit = function exit() {
 };
 
 StateMainMenu.prototype.update = function update(delta) {
@@ -212,10 +205,6 @@ function GreenPepper(state, x, speed) {
 var StateInGame = function StateInGame() {
 };
 
-StateInGame.prototype.initialize = function initialize() {
-    this.selected = 0;
-};
-
 StateInGame.prototype.enter = function enter() {
     this.player = new Player(this);
     this.reds = 0;
@@ -223,14 +212,14 @@ StateInGame.prototype.enter = function enter() {
     this.game.globals.score = 0;
 };
 
-StateInGame.prototype.exit = function exit() {
-};
-
 StateInGame.prototype.update = function update(delta) {
     backgroundUpdate(this.game, delta);
     this.player.update(delta);
     this.pepperManager.update(delta);        
 
+    if (this.reds > 3) {
+        this.game.switchState("gameover");
+    }
 };
 
 StateInGame.prototype.render = function render() {
@@ -248,6 +237,12 @@ StateInGame.prototype.render = function render() {
     for (var i = 0; i < this.reds; i++) {
         ctx.drawImage(this.game.assets.images.redpepper, this.game.canvas.width - 50 - (i * 50), 5);
     }
+};
+
+var StateGameOver = function StateGameOver() {
+};
+
+StateGameOver.prototype.render = function render() {
 };
 
 StateInGame.prototype.touchHandlers = [

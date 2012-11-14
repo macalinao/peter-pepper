@@ -24,6 +24,9 @@ Engin.Game.prototype.defineStates = function defineStates(states) {
     for (name in states) {
         this.states[name] = new states[name]();
         this.states[name].game = this;
+        if (this.states[name].initialize) {
+            this.states[name].initialize();
+        }
     }
 }
 
@@ -40,13 +43,20 @@ Engin.Game.prototype.initialize = function initialize(canvas) {
 
 Engin.Game.prototype.start = function start() {
     this.state = this.states.initial;
-    this.states.initial.enter();
+    
+    if (this.states.initial.enter) {
+        this.states.initial.enter();
+    }
 
     var game = this;
     setInterval(function loop() {
-        game.state.update(50);
+        if (game.state.update) {
+            game.state.update(50);
+        }
         game.ctx.clearRect(0, 0, game.canvas.width, game.canvas.height);
-        game.state.render();
+        if (game.state.render) {
+            game.state.render();
+        }
     }, 50);
 };
 
@@ -54,9 +64,13 @@ Engin.Game.prototype.switchState = function switchState(name) {
     var prevState = this.state;
     var nextState = this.states[name];
 
-    prevState.exit();
+    if (prevState.exit) {
+        prevState.exit();
+    }
     this.state = nextState;
-    nextState.enter();
+    if (nextState.enter) {
+        nextState.enter();
+    }
 };
 
 /**
@@ -153,24 +167,28 @@ Engin.Input.Handler.Webworks = function(game) {
     game.canvas.ontouchstart = function ontouchstart(event) {
         var touch = event.touches[0];
         var handlers = game.state.touchHandlers;
-        for (var i = 0; i < handlers.length; i++) {
-            handlers[i](game.state, {
-                type: 'start',
-                x: touch.screenX,
-                y: touch.screenY
-            });
+        if (handlers) {
+            for (var i = 0; i < handlers.length; i++) {
+                handlers[i](game.state, {
+                    type: 'start',
+                    x: touch.screenX,
+                    y: touch.screenY
+                });
+            }
         }
     };
 
     game.canvas.ontouchend = function ontouchend(event) {
         var touch = event.touches[0];
         var handlers = game.state.touchHandlers;
-        for (var i = 0; i < handlers.length; i++) {
-            handlers[i](game.state, {
-                type: 'end',
-                x: touch.screenX,
-                y: touch.screenY
-            });
+        if (handlers) {
+            for (var i = 0; i < handlers.length; i++) {
+                handlers[i](game.state, {
+                    type: 'end',
+                    x: touch.screenX,
+                    y: touch.screenY
+                });
+            }
         }
     };
 };
