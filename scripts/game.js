@@ -239,12 +239,6 @@ StateInGame.prototype.render = function render() {
     }
 };
 
-var StateGameOver = function StateGameOver() {
-};
-
-StateGameOver.prototype.render = function render() {
-};
-
 StateInGame.prototype.touchHandlers = [
     function checkLeft(state, touch) {
         if (touch.type == 'start' && Engin.Input.inRectBounds(
@@ -272,8 +266,28 @@ StateInGame.prototype.touchHandlers = [
     }
 ];
 
+var StateGameOver = function StateGameOver() {
+};
+
+StateGameOver.prototype.render = function render() {
+    backgroundRender(this.game);
+
+    var ctx = this.game.ctx;
+    ctx.font = "40px Arial";
+    ctx.fillStyle = "#000000";
+    ctx.fillText("You managed to eat " + this.game.globals.score + " peppers", 20, 40);
+};
+
+// Temp workaround for Ripple
+var hasReadied = false;
+
 document.addEventListener("webworksready", function() {
 // $(function() {
+    if (hasReadied) {
+        return;
+    }
+    hasReadied = true;
+    
     var game = new Engin.Game({
         platform: Engin.Platform.WEB,
         assets: {
@@ -281,7 +295,6 @@ document.addEventListener("webworksready", function() {
             sounds: ["mariachi"]
         }
     });
-    window.game = game
 
     var canvas = document.getElementById("game");
     canvas.width = document.width;
@@ -289,7 +302,8 @@ document.addEventListener("webworksready", function() {
 
     game.defineStates({
         initial: StateMainMenu,
-        ingame: StateInGame
+        ingame: StateInGame,
+        gameover: StateGameOver
     });
     game.globals.clouds = new Clouds(game);
     game.initialize(canvas);
