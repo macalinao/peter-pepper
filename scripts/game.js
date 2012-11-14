@@ -40,6 +40,9 @@ StateMainMenu.prototype.enter = function enter() {
     this.game.assets.sounds.mariachi.play();
 };
 
+StateMainMenu.prototype.exit = function exit() {
+};
+
 StateMainMenu.prototype.update = function update(delta) {
     backgroundUpdate(this.game, delta);
 };
@@ -55,13 +58,13 @@ StateMainMenu.prototype.render = function render() {
 };
 
 StateMainMenu.prototype.touchHandlers = [
-    function onTouch(touch) {
+    function onTouch(state, touch) {
         if (Engin.Input.inRectBounds(
             [
                 [0, 0],
                 [100, 100]
             ], touch)) {
-            alert("start the game!");
+            state.game.switchState("ingame");
         }
     }
 ];
@@ -73,7 +76,34 @@ var StateInGame = function StateInGame() {
 };
 
 StateInGame.prototype.initialize = function initialize() {
+    this.selected = 0;
 };
+
+StateInGame.prototype.enter = function enter() {
+};
+
+StateInGame.prototype.exit = function exit() {
+};
+
+StateInGame.prototype.update = function update(delta) {
+    backgroundUpdate(this.game, delta);
+};
+
+StateInGame.prototype.render = function render() {
+    backgroundRender(this.game);
+};
+
+StateInGame.prototype.touchHandlers = [
+    function onTouch(state, touch) {
+        if (Engin.Input.inRectBounds(
+            [
+                [0, 0],
+                [100, 100]
+            ], touch)) {
+            alert("You switched states");
+        }
+    }
+];
 
 // document.addEventListener("webworksready", function() {
 $(function() {
@@ -90,7 +120,8 @@ $(function() {
     canvas.height = document.height;
 
     game.defineStates({
-        initial: StateMainMenu
+        initial: StateMainMenu,
+        ingame: StateInGame
     });
     game.globals.clouds = new Clouds(game);
     game.initialize(canvas);
