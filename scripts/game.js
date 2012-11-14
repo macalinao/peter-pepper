@@ -46,7 +46,25 @@ StateMainMenu.prototype.update = function update(delta) {
 
 StateMainMenu.prototype.render = function render() {
     backgroundRender(this.game);
+    this.game.ctx.font = "40px Arial";
+    this.game.ctx.fillStyle = "#000000";
+    this.game.ctx.fillText("Peter Pepper", (this.game.canvas.width / 2) - 100, this.game.canvas.height / 5);
+
+    this.game.ctx.fillText("Start", (this.game.canvas.width / 2) - 100, 3 * this.game.canvas.height / 5);
+    this.game.ctx.fillText("Credits", (this.game.canvas.width / 2) - 100, 4 * this.game.canvas.height / 5);
 };
+
+StateMainMenu.prototype.touchHandlers = [
+    function onTouch(touch) {
+        if (Engin.Input.inRectBounds(
+            [
+                [0, 0],
+                [100, 100]
+            ], touch)) {
+            alert("start the game!");
+        }
+    }
+];
 
 /**
  * In-game state
@@ -76,5 +94,6 @@ $(function() {
     });
     game.globals.clouds = new Clouds(game);
     game.initialize(canvas);
+
     game.start();
 });

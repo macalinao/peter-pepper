@@ -35,6 +35,7 @@ Engin.Game.prototype.initialize = function initialize(canvas) {
     this.assets.load();
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
+    this.input = new Engin.Input.Handler[this.platform](this);
 };
 
 Engin.Game.prototype.start = function start() {
@@ -112,7 +113,7 @@ Engin.Assets.Sound.Web = function(name) {
 }
 
 Engin.Assets.Sound.Web.prototype.play = function() {
-    this.sound.play();
+    // this.sound.play();
 }
 
 Engin.Assets.Sound.Web.prototype.pause = function() {
@@ -140,3 +141,36 @@ Engin.Assets.Sound.Webworks.prototype.stop = function() {
     this.player.pause();
     this.player.mediaTime = 0;
 }
+
+//////////////
+// INPUT
+//////////////
+Engin.Input = {};
+
+Engin.Input.Handler = {};
+
+Engin.Input.Handler.Webworks = function(game) {
+    game.canvas.ontouchstart = function ontouchstart(event) {
+        var touch = event.touches[0];
+        var handlers = game.state.touchHandlers;
+        for (var i = 0; i < handlers.length; i++) {
+            handlers[i]({x: touch.screenX, y: touch.screenY});
+        }
+    };
+};
+
+Engin.Input.Handler.Web = Engin.Input.Handler.Webworks;
+
+/**
+ * Checks if a touch is in the rectangular bounds specified by bounds [[x1, y1], [x2, y2]].
+ */
+Engin.Input.inRectBounds = function inRectBounds(bounds, touch) {
+    var minX = Math.min(bounds[0][0], bounds[1][0]);
+    var maxX = Math.max(bounds[0][0], bounds[1][0]);
+
+    var minY = Math.min(bounds[0][1], bounds[1][1]);
+    var maxY = Math.max(bounds[0][1], bounds[1][1]);
+
+    return (minX <= touch.x && touch.x <= maxX
+        && minY <= touch.y && touch.y <= maxY);
+};
