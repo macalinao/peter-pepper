@@ -154,7 +154,23 @@ Engin.Input.Handler.Webworks = function(game) {
         var touch = event.touches[0];
         var handlers = game.state.touchHandlers;
         for (var i = 0; i < handlers.length; i++) {
-            handlers[i](game.state, {x: touch.screenX, y: touch.screenY});
+            handlers[i](game.state, {
+                type: 'start',
+                x: touch.screenX,
+                y: touch.screenY
+            });
+        }
+    };
+
+    game.canvas.ontouchend = function ontouchend(event) {
+        var touch = event.touches[0];
+        var handlers = game.state.touchHandlers;
+        for (var i = 0; i < handlers.length; i++) {
+            handlers[i](game.state, {
+                type: 'end',
+                x: touch.screenX,
+                y: touch.screenY
+            });
         }
     };
 };

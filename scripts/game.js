@@ -94,13 +94,28 @@ StateInGame.prototype.render = function render() {
 };
 
 StateInGame.prototype.touchHandlers = [
-    function onTouch(state, touch) {
-        if (Engin.Input.inRectBounds(
+    function checkLeft(state, touch) {
+        if (touch.type == 'start' && Engin.Input.inRectBounds(
             [
                 [0, 0],
-                [100, 100]
+                [screen.width / 2, screen.height]
             ], touch)) {
-            alert("You switched states");
+            state.direction = (state.direction == 1) ? 0 : -1;
+        }
+    },
+
+    function checkRight(state, touch) {
+        if (touch.type == 'start' && Engin.Input.inRectBounds(
+            [
+                [screen.width / 2, 0],
+                [screen.width, screen.height]
+            ], touch)) {
+            state.direction = (state.direction == -1) ? 0 : 1;        }
+    },
+
+    function checkStop(state, touch) {
+        if (touch.type == 'end') {
+            state.direction = 0;
         }
     }
 ];
