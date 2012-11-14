@@ -72,6 +72,50 @@ StateMainMenu.prototype.touchHandlers = [
 /**
  * In-game state
  */
+function Player(state) {
+    this.state = state;
+    this.x = 50;
+    this.y = 3 * state.game.canvas.height / 4;
+    this.speed = 300;
+    this.reds = 0;
+
+    this.eating = false;
+    this.doneTime = 0;
+
+    this.update = function(delta) {
+        if (this.state.direction == -1) {
+            if (this.x > 0) {
+                this.x -= this.speed * (delta / 1000);
+            }
+        }
+
+        if (this.state.direction == 1) {
+            if (this.x < this.state.game.canvas.width - 75) {
+                this.x += this.speed * (delta / 1000);
+            }
+        }
+
+        if (this.eating && this.doneTime < Date.now()) {
+            this.eating = false;
+        }
+    };
+
+    this.draw = function() {
+        var game = this.state.game;
+
+        if (this.eating) {
+            game.ctx.drawImage(game.assets.images.mexicaneating, this.x, this.y);
+        } else {
+            game.ctx.drawImage(game.assets.images.mexican, this.x, this.y);
+        }
+    };
+
+    this.isNowEating = function() {
+        this.eating = true;
+        this.doneTime = Date.now() + 200;
+    };
+}
+
 var StateInGame = function StateInGame() {
 };
 
@@ -80,6 +124,7 @@ StateInGame.prototype.initialize = function initialize() {
 };
 
 StateInGame.prototype.enter = function enter() {
+    this.player = new Player(this);
 };
 
 StateInGame.prototype.exit = function exit() {
@@ -87,10 +132,12 @@ StateInGame.prototype.exit = function exit() {
 
 StateInGame.prototype.update = function update(delta) {
     backgroundUpdate(this.game, delta);
+    this.player.update(delta);
 };
 
 StateInGame.prototype.render = function render() {
     backgroundRender(this.game);
+    this.player.draw();
 };
 
 StateInGame.prototype.touchHandlers = [
@@ -120,15 +167,16 @@ StateInGame.prototype.touchHandlers = [
     }
 ];
 
-// document.addEventListener("webworksready", function() {
-$(function() {
+document.addEventListener("webworksready", function() {
+// $(function() {
     var game = new Engin.Game({
         platform: Engin.Platform.WEB,
         assets: {
-            images: ["bg", "clouds", "greenpepper", "mexican", "mexican_mouth", "redpepper"],
+            images: ["bg", "clouds", "greenpepper", "mexican", "mexicaneating", "redpepper"],
             sounds: ["mariachi"]
         }
     });
+    window.game = game
 
     var canvas = document.getElementById("game");
     canvas.width = document.width;
