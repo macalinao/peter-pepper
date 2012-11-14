@@ -116,6 +116,99 @@ function Player(state) {
     };
 }
 
+function PepperManager(state) {
+    this.state = state;
+    this.lastSpawn = Date.now();
+    this.peppers = [];
+
+    this.player = this.state.player;
+
+    this.getPepperSpawnX  = function() {
+        return Math.random() * this.state.game.canvas.width - 50;
+    };
+
+    this.spawnPepper = function(Pepper) {
+        this.peppers.push(new Pepper(this.state, this.getPepperSpawnX(), 100));
+    };
+
+    this.spawnPeppers = function() {
+        var now = Date.now();
+        if (now - this.lastSpawn > 1000) {
+            if (Math.random() < 0.8) {
+                this.spawnPepper(RedPepper);
+            } else {
+                this.spawnPepper(GreenPepper);
+            }
+            this.lastSpawn = now;
+        }
+    };
+
+    this.update = function(delta) {
+        this.spawnPeppers();
+
+        for (var i = 0; i < this.peppers.length; i++) {
+            var pepper = this.peppers[i];
+            pepper.update(delta);
+
+            // Check for pepper eat
+            if (pepper.x > this.player.x && pepper.x < this.player.x + 50 && pepper.y > this.player.y && pepper.y < this.player.y + 150) {
+                this.peppers.splice(i, 1);
+                pepper.eat();
+                this.player.isNowEating();
+                continue;
+            }
+
+            if (pepper.y > 550) {
+                this.peppers.splice(i, i);
+            }
+        }
+    };
+
+    this.draw = function() {
+        for (var i = 0; i < this.peppers.length; i++) {
+            this.peppers[i].draw();
+        }
+    };
+}
+
+function RedPepper(state, x, speed) {
+    this.state = state;
+    this.x = x;
+    this.y = 0;
+    this.speed = speed;
+
+    this.update = function(delta) {
+        this.y += this.speed * (delta / 1000);
+    };
+
+    this.draw = function() {
+        this.state.game.ctx.drawImage(this.state.game.assets.images.redpepper, this.x, this.y);
+    };
+
+    this.eat = function() {
+        this.state.reds += 1;
+    };
+}
+
+function GreenPepper(state, x, speed) {
+    this.state = state;
+    this.x = x;
+    this.y = 0;
+    this.speed = speed;
+
+    this.update = function(delta) {
+        this.y += this.speed * (delta / 1000);
+    };
+
+    this.draw = function() {
+        this.state.game.ctx.drawImage(this.state.game.assets.images.greenpepper, this.x, this.y);
+    };
+
+    this.eat = function() {
+        this.state.game.globals.score += 1;
+    };
+}
+
 var StateInGame = function StateInGame() {
 };
 
@@ -125,6 +218,9 @@ StateInGame.prototype.initialize = function initialize() {
 
 StateInGame.prototype.enter = function enter() {
     this.player = new Player(this);
+    this.reds = 0;
+    this.pepperManager = new PepperManager(this);
+    this.game.globals.score = 0;
 };
 
 StateInGame.prototype.exit = function exit() {
@@ -133,11 +229,25 @@ StateInGame.prototype.exit = function exit() {
 StateInGame.prototype.update = function update(delta) {
     backgroundUpdate(this.game, delta);
     this.player.update(delta);
+    this.pepperManager.update(delta);        
+
 };
 
 StateInGame.prototype.render = function render() {
     backgroundRender(this.game);
     this.player.draw();
+    this.pepperManager.draw();
+
+    var ctx = this.game.ctx;
+
+    ctx.font = "40px Arial";
+    ctx.fillStyle = "#000000";
+    ctx.fillText("Peppers: " + this.game.globals.score, 20, 40);
+
+    // Draw reds
+    for (var i = 0; i < this.reds; i++) {
+        ctx.drawImage(this.game.assets.images.redpepper, this.game.canvas.width - 50 - (i * 50), 5);
+    }
 };
 
 StateInGame.prototype.touchHandlers = [
