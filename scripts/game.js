@@ -51,13 +51,13 @@ StateMainMenu.prototype.render = function render() {
 };
 
 StateMainMenu.prototype.touchHandlers = [
-    function onTouch(state, touch) {
+    function onTouch(touch) {
         if (Engin.Input.inRectBounds(
             [
                 [0, 0],
                 [100, 100]
             ], touch)) {
-            state.game.switchState("ingame");
+            this.game.switchState("ingame");
         }
     }
 ];
@@ -240,28 +240,28 @@ StateInGame.prototype.render = function render() {
 };
 
 StateInGame.prototype.touchHandlers = [
-    function checkLeft(state, touch) {
+    function checkLeft(touch) {
         if (touch.type == 'start' && Engin.Input.inRectBounds(
             [
                 [0, 0],
                 [screen.width / 2, screen.height]
             ], touch)) {
-            state.direction = (state.direction == 1) ? 0 : -1;
+            this.direction = (this.direction == 1) ? 0 : -1;
         }
     },
 
-    function checkRight(state, touch) {
+    function checkRight(touch) {
         if (touch.type == 'start' && Engin.Input.inRectBounds(
             [
                 [screen.width / 2, 0],
                 [screen.width, screen.height]
             ], touch)) {
-            state.direction = (state.direction == -1) ? 0 : 1;        }
+            this.direction = (this.direction == -1) ? 0 : 1;        }
     },
 
-    function checkStop(state, touch) {
+    function checkStop(touch) {
         if (touch.type == 'end') {
-            state.direction = 0;
+            this.direction = 0;
         }
     }
 ];
@@ -275,8 +275,17 @@ StateGameOver.prototype.render = function render() {
     var ctx = this.game.ctx;
     ctx.font = "40px Arial";
     ctx.fillStyle = "#000000";
-    ctx.fillText("You managed to eat " + this.game.globals.score + " peppers", 20, 40);
+    ctx.fillText("You managed to eat " + this.game.globals.score + " peppers.", this.game.canvas.width / 2 - 300, this.game.canvas.height / 3);
+    ctx.fillText("Click anywhere to try again.", this.game.canvas.width / 2 - 300, this.game.canvas.height / 2)
 };
+
+StateGameOver.prototype.touchHandlers = [
+    function backToMainMenu(touch) {
+        if (touch.type == 'start') {
+            this.game.switchState('initial');
+        }
+    }
+];
 
 // Temp workaround for Ripple
 var hasReadied = false;

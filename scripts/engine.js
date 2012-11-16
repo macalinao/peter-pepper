@@ -169,7 +169,7 @@ Engin.Input.Handler.Webworks = function(game) {
         var handlers = game.state.touchHandlers;
         if (handlers) {
             for (var i = 0; i < handlers.length; i++) {
-                handlers[i](game.state, {
+                handlers[i].call(game.state, {
                     type: 'start',
                     x: touch.screenX,
                     y: touch.screenY
@@ -183,7 +183,7 @@ Engin.Input.Handler.Webworks = function(game) {
         var handlers = game.state.touchHandlers;
         if (handlers) {
             for (var i = 0; i < handlers.length; i++) {
-                handlers[i](game.state, {
+                handlers[i].call(game.state, {
                     type: 'end',
                     x: touch.screenX,
                     y: touch.screenY
