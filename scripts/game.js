@@ -34,6 +34,7 @@ var StateMainMenu = function StateMainMenu() {
 
 StateMainMenu.prototype.enter = function enter() {
     this.game.assets.sounds.mariachi.play();
+    this.game.assets.sounds.mariachi.startLooping();
 };
 
 StateMainMenu.prototype.update = function update(delta) {
@@ -42,21 +43,12 @@ StateMainMenu.prototype.update = function update(delta) {
 
 StateMainMenu.prototype.render = function render() {
     backgroundRender(this.game);
-    this.game.ctx.font = "40px Arial";
-    this.game.ctx.fillStyle = "#000000";
-    this.game.ctx.fillText("Peter Pepper", (this.game.canvas.width / 2) - 100, this.game.canvas.height / 5);
-
-    this.game.ctx.fillText("Start", (this.game.canvas.width / 2) - 100, 3 * this.game.canvas.height / 5);
-    this.game.ctx.fillText("Credits", (this.game.canvas.width / 2) - 100, 4 * this.game.canvas.height / 5);
+    this.game.ctx.drawImage(this.game.assets.images.logo, 0, 0, this.game.canvas.width, this.game.canvas.height);
 };
 
 StateMainMenu.prototype.touchHandlers = [
     function onTouch(touch) {
-        if (Engin.Input.inRectBounds(
-            [
-                [0, 0],
-                [100, 100]
-            ], touch)) {
+        if (touch.type == "start") {
             this.game.switchState("ingame");
         }
     }
@@ -180,6 +172,8 @@ function RedPepper(state, x, speed) {
 
     this.eat = function() {
         this.state.reds += 1;
+        this.state.game.assets.sounds.ah.play();
+        this.state.game.assets.sounds.ah.reset();
     };
 }
 
@@ -199,6 +193,8 @@ function GreenPepper(state, x, speed) {
 
     this.eat = function() {
         this.state.game.globals.score += 1;
+        this.state.game.assets.sounds.mm.play();
+        this.state.game.assets.sounds.mm.reset();
     };
 }
 
@@ -290,8 +286,8 @@ StateGameOver.prototype.touchHandlers = [
 // Temp workaround for Ripple
 var hasReadied = false;
 
-document.addEventListener("webworksready", function() {
-// $(function() {
+// document.addEventListener("webworksready", function() {
+$(function() {
     if (hasReadied) {
         return;
     }
@@ -300,8 +296,8 @@ document.addEventListener("webworksready", function() {
     var game = new Engin.Game({
         platform: Engin.Platform.WEB,
         assets: {
-            images: ["bg", "clouds", "greenpepper", "mexican", "mexicaneating", "redpepper"],
-            sounds: ["mariachi"]
+            images: ["bg", "clouds", "greenpepper", "mexican", "mexicaneating", "redpepper", "logo"],
+            sounds: ["mariachi", "mm", "ah"]
         }
     });
 

@@ -127,7 +127,27 @@ Engin.Assets.Sound.Web = function(name) {
 }
 
 Engin.Assets.Sound.Web.prototype.play = function() {
-    // this.sound.play();
+    this.sound.play();
+}
+
+Engin.Assets.Sound.Web.prototype.reset = function() {
+    var sound = this.sound;
+    sound.addEventListener('ended', function() {
+        sound.currentTime = 0;
+    });
+}
+
+Engin.Assets.Sound.Web.prototype.startLooping = function() {
+    if (this.looping) {
+        return;
+    }
+    this.looping = true;
+
+    var sound = this.sound;
+    sound.addEventListener('ended', function() {
+        sound.currentTime = 0;
+        sound.play();
+    }, false);
 }
 
 Engin.Assets.Sound.Web.prototype.pause = function() {
@@ -138,23 +158,7 @@ Engin.Assets.Sound.Web.prototype.stop = function() {
     this.sound.stop();
 }
 
-Engin.Assets.Sound.Webworks = function(name) {
-    this.name = name;
-    this.player = new blackberry.audio.Player("local:///assets/sounds/" + name + ".mp3");
-}
-
-Engin.Assets.Sound.Webworks.prototype.play = function() {
-    this.player.play();
-}
-
-Engin.Assets.Sound.Webworks.prototype.pause = function() {
-    this.player.pause();
-}
-
-Engin.Assets.Sound.Webworks.prototype.stop = function() {
-    this.player.pause();
-    this.player.mediaTime = 0;
-}
+Engin.Assets.Sound.Webworks = Engin.Assets.Sound.Web;
 
 //////////////
 // INPUT
