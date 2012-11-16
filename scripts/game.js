@@ -286,15 +286,15 @@ StateGameOver.prototype.touchHandlers = [
 // Temp workaround for Ripple
 var hasReadied = false;
 
-// document.addEventListener("webworksready", function() {
-$(function() {
+document.addEventListener("webworksready", function() {
+// $(function() {
     if (hasReadied) {
         return;
     }
     hasReadied = true;
     
     var game = new Engin.Game({
-        platform: Engin.Platform.WEB,
+        platform: Engin.Platform.WEBWORKS,
         assets: {
             images: ["bg", "clouds", "greenpepper", "mexican", "mexicaneating", "redpepper", "logo"],
             sounds: ["mariachi", "mm", "ah"]

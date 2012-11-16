@@ -8,5 +8,4 @@
   <content src="index.html"/>
   <feature id="blackberry.identity" required="true" version="1.0.0.0"/>
   <rim:orientation mode="landscape" />
-  <feature id="blackberry.audio.Player" />
 </widget>
